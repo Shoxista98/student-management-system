@@ -1,6 +1,23 @@
+# Bog'liqliklar va build natijalari
 node_modules/
+dist/
+build/
+
+# Maxfiy kalitlar va muhit o'zgaruvchilari
 .env
-.DS_Store
-Thumbs.db
+.env.*
+!.env.example
+*.key
+*.pem
+secrets.json
+
+# Vaqtinchalik fayllar
+*.tmp
+*.log
+~$*
+
+# IDE va operatsion tizim fayllari
 .vscode/
 .idea/
+.DS_Store
+Thumbs.db
