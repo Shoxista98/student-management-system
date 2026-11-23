@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>USMS — Universitet talabalarini boshqarish tizimi</title>
+<style>
+:root{--navy:#1f3b73;--navy2:#2e5c9e;--blue:#2e6fb5;--bg:#eef1f6;--card:#fff;--line:#e3e7ef;--txt:#1d2433;--mut:#6b7689;--ok:#3d7a26;--okb:#e5f2e0;--bad:#b8323a;--badb:#fde7e1;--warn:#9a6a00;--warnb:#fdf1d8;--inf:#2e5c9e;--infb:#e4ecf8;--pur:#6b3fa0;--purb:#eee8f8}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--txt);font-size:14px}
+button{font:inherit;cursor:pointer}
+input,select,textarea{font:inherit;color:inherit}
+a{color:var(--navy2);text-decoration:none}
+.hidden{display:none!important}
+/* login */
+#login{display:flex;min-height:100vh}
+#login .l{flex:1.05;background:linear-gradient(160deg,var(--navy),var(--navy2));color:#fff;padding:56px 60px;display:flex;flex-direction:column}
+#login .l h1{font-size:40px;line-height:1.25;margin:60px 0 20px}
+#login .l p{font-size:17px;opacity:.9;max-width:460px;line-height:1.6}
+#login .l ul{list-style:none;margin-top:36px}#login .l li{margin:16px 0;font-size:16px}#login .l li:before{content:"✓";display:inline-flex;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.2);align-items:center;justify-content:center;margin-right:12px;font-size:12px}
+#login .l .ft{margin-top:auto;font-size:13px;opacity:.7}
+#login .r{flex:1;display:flex;align-items:center;justify-content:center;padding:30px}
+.lcard{width:470px;background:#fff;border-radius:16px;box-shadow:0 10px 30px rgba(20,40,80,.12);padding:40px}
+.lcard h2{color:var(--navy);font-size:28px}.lcard .sub{color:var(--mut);margin:6px 0 24px}
+.brand{display:flex;gap:12px;align-items:center}.logo{width:46px;height:46px;border-radius:10px;background:#fff;color:var(--navy);font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;flex:none}
+.brand b{font-size:17px;letter-spacing:.5px}.brand small{display:block;font-size:12px;opacity:.8}
+.demo{margin-top:22px;border-top:1px solid var(--line);padding-top:16px}.demo h4{font-size:11px;color:var(--mut);letter-spacing:1px;margin-bottom:10px}
+.demo .g{display:grid;grid-template-columns:1fr 1fr;gap:8px}.demo button{border:1px solid var(--line);background:#f8fafc;border-radius:8px;padding:8px 10px;text-align:left;font-size:12px}.demo button b{display:block;color:var(--navy);font-size:13px}
+/* layout */
+#app{display:flex;min-height:100vh}
+.side{width:250px;background:var(--navy);color:#fff;padding:18px 14px;position:fixed;top:0;bottom:0;left:0;overflow-y:auto;display:flex;flex-direction:column;z-index:20}
+.side .brand{padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.15)}
+.side .sec{font-size:11px;opacity:.55;margin:18px 8px 6px;letter-spacing:1px}
+.side a.it{display:block;color:#fff;padding:9px 12px;border-radius:7px;margin:2px 0;opacity:.88;font-size:14px}
+.side a.it:hover{background:rgba(255,255,255,.08)}.side a.it.on{background:rgba(255,255,255,.17);font-weight:700;opacity:1}
+.side .me{margin-top:auto;border-top:1px solid rgba(255,255,255,.15);padding-top:12px;font-size:13px;display:flex;gap:10px;align-items:center}
+.av{width:34px;height:34px;border-radius:50%;background:#2e7bd0;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex:none}
+.main{margin-left:250px;flex:1;min-width:0}
+.top{height:58px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:10}
+.top .crumb{color:var(--mut)}.top .crumb b{color:var(--txt)}
+.top .who{display:flex;gap:10px;align-items:center}.top .who small{display:block;color:var(--mut)}
+.menu-btn{display:none;border:0;background:none;font-size:22px;margin-right:10px}
+.cnt{padding:22px 24px 40px}
+.ph{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.ph h1{color:var(--navy);font-size:26px}.ph p{color:var(--mut);margin-top:3px}
+.btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 14px;font-weight:600;color:var(--txt)}
+.btn.p{background:var(--navy);color:#fff;border-color:var(--navy)}.btn.d{color:var(--bad);border-color:#f1c6c9}.btn.s{padding:5px 10px;font-size:12px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.card{background:var(--card);border-radius:12px;padding:16px 18px;border:1px solid var(--line)}
+.card h3{color:var(--navy);font-size:15px;margin-bottom:12px}
+.grid{display:grid;gap:14px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:1.6fr 1fr}.g11{grid-template-columns:1fr 1fr}
+.kpi{border-left:4px solid var(--blue)}.kpi s{text-decoration:none;color:var(--mut);font-size:12px;letter-spacing:.5px;text-transform:uppercase}.kpi b{display:block;font-size:28px;color:var(--navy);margin:4px 0}.kpi small{color:var(--mut)}
+table{width:100%;border-collapse:collapse}th{text-align:left;font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;padding:8px 6px;border-bottom:1px solid var(--line)}td{padding:8px 6px;border-bottom:1px solid #f0f2f6;vertical-align:middle}
+tr:hover td{background:#fafbfd}
+.tag{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:700}
+.t-ok{background:var(--okb);color:var(--ok)}.t-bad{background:var(--badb);color:var(--bad)}.t-warn{background:var(--warnb);color:var(--warn)}.t-inf{background:var(--infb);color:var(--inf)}.t-pur{background:var(--purb);color:var(--pur)}.t-mut{background:#eef0f4;color:#556}
+.flt{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.in{border:1px solid #cfd7e3;border-radius:8px;padding:8px 11px;background:#fff;min-width:0}
+.in:focus{outline:2px solid #bcd0ee;border-color:var(--navy2)}
+label.f{display:block;font-weight:600;font-size:13px;margin:10px 0 5px}
+.bars{display:flex;align-items:flex-end;gap:16px;height:170px;border-bottom:1px solid var(--line);padding:0 8px}
+.bars .b{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;font-size:11px;color:var(--mut)}
+.bars .b i{display:block;width:100%;background:var(--blue);border-radius:4px 4px 0 0;margin-top:4px}
+.blab{display:flex;gap:16px;padding:6px 8px 0;font-size:12px;color:var(--mut)}.blab span{flex:1;text-align:center}
+.ev{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #f0f2f6}.ev:last-child{border:0}
+.ev i{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:11px;font-weight:700;flex:none}.ev small{display:block;color:var(--mut);font-size:12px}
+.qa{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.qa button{border:1px solid var(--line);background:#f8fafc;border-radius:10px;padding:12px;text-align:left}.qa button b{display:block;color:var(--navy)}.qa button small{color:var(--mut)}
+/* modal */
+.mb{position:fixed;inset:0;background:rgba(15,25,45,.45);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.md{background:#fff;border-radius:14px;width:560px;max-width:100%;max-height:92vh;overflow:auto;padding:22px 24px}
+.md h2{color:var(--navy);font-size:20px;margin-bottom:6px}.md .act{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.err{color:var(--bad);font-size:12px;margin-top:4px}
+#toast{position:fixed;right:20px;bottom:20px;z-index:60;display:flex;flex-direction:column;gap:8px}
+.ts{background:#fff;border-left:4px solid var(--ok);box-shadow:0 6px 20px rgba(0,0,0,.12);border-radius:8px;padding:10px 14px;min-width:240px}.ts.e{border-color:var(--bad)}
+.gin{width:58px;padding:5px 6px;border:1px solid #cfd7e3;border-radius:6px;text-align:center}
+.att button{border:1px solid var(--line);background:#fff;border-radius:6px;padding:4px 9px;font-size:12px;margin-right:4px}
+.att button.on.p{background:var(--okb);color:var(--ok);border-color:#b9dcae}.att button.on.a{background:var(--badb);color:var(--bad);border-color:#efb9b3}.att button.on.s{background:var(--warnb);color:var(--warn);border-color:#ecd39a}
+.kan{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.col{background:#f4f6fa;border-radius:10px;padding:10px}.col h4{font-size:12px;color:var(--mut);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.tk{background:#fff;border:1px solid var(--line);border-radius:8px;padding:9px 10px;margin-bottom:8px;font-size:13px}.tk small{display:block;color:var(--mut);margin-top:4px}.tk .mv{margin-top:6px;display:flex;gap:4px}
+.gantt td.c{padding:6px 2px}.gantt .bar{height:16px;border-radius:4px;background:var(--blue)}.gantt .bar.done{background:#4f8a2e}.gantt .bar.cur{background:#c8611c}
+.empty{color:var(--mut);text-align:center;padding:24px}
+.prog{height:8px;background:#eef0f4;border-radius:6px;overflow:hidden}.prog i{display:block;height:100%;background:var(--blue)}
+@media(max-width:1000px){.g4{grid-template-columns:1fr 1fr}.g2,.g3,.g11,.kan{grid-template-columns:1fr}.qa{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.side{transform:translateX(-100%);transition:.2s}.side.open{transform:none}.main{margin-left:0}.menu-btn{display:inline}#login{flex-direction:column}#login .l{padding:30px}#login .l h1{font-size:28px;margin:30px 0 12px}.g4{grid-template-columns:1fr}.top .who div{display:none}.cnt{padding:16px 12px}.tw{overflow-x:auto}.row2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<section id="login">
+  <div class="l">
+    <div class="brand"><div class="logo">USMS</div><div><b>UNIVERSITET</b><small>Talabalarni boshqarish tizimi</small></div></div>
+    <h1>Talabalar ma'lumotlari<br>bitta tizimda</h1>
+    <p>Guruhlar, talabalar, fanlar, baholar va davomat — barchasi yagona xavfsiz web ilovada.</p>
+    <ul><li>Talabalar kontingenti va guruhlar</li><li>Baholar jurnali va GPA hisobi</li><li>Davomat va qoldirilgan soatlar</li><li>Rollar va ruxsatlar asosida kirish</li></ul>
+    <div class="ft">© 2026 USMS · Kozibayeva Shoxista · 6-mavzu amaliy loyihasi</div>
+  </div>
+  <div class="r">
+    <form class="lcard" id="lf" autocomplete="off">
+      <h2>Tizimga kirish</h2><div class="sub">Davom etish uchun hisobingizga kiring.</div>
+      <label class="f" for="le">Login yoki e-mail</label><input class="in" style="width:100%" id="le" placeholder="admin@usms.uz">
+      <label class="f" for="lp">Parol</label><input class="in" style="width:100%" id="lp" type="password" placeholder="••••••••">
+      <div class="err" id="lerr"></div>
+      <button class="btn p" style="width:100%;margin-top:18px;padding:12px">Kirish</button>
+      <div class="demo"><h4>DEMO HISOBLAR</h4><div class="g" id="demo"></div>
+      <p style="color:var(--mut);font-size:12px;margin-top:10px">Ma'lumotlar brauzeringizda (localStorage) saqlanadi. Hammasi namunaviy, real shaxslarga tegishli emas.</p></div>
+    </form>
+  </div>
+</section>
+
+<!-- ============ APP ============ -->
+<section id="app" class="hidden">
+  <aside class="side" id="side">
+    <div class="brand"><div class="logo">USMS</div><div><b>UNIVERSITET</b><small>Talabalarni boshqarish tizimi</small></div></div>
+    <nav id="nav"></nav>
+    <div class="me"><span class="av" id="meav"></span><div><b id="mename"></b><br><small style="opacity:.75" id="merole"></small></div></div>
+  </aside>
+  <div class="main">
+    <header class="top">
+      <div><button class="menu-btn" onclick="side.classList.toggle('open')">☰</button><span class="crumb">Boshqaruv / <b id="crumb"></b></span></div>
+      <div class="who"><span style="color:var(--mut)" id="today"></span><span class="av" id="meav2"></span><div><b id="mename2"></b><small id="merole2"></small></div><button class="btn s" onclick="logout()">Chiqish</button></div>
+    </header>
+    <main class="cnt" id="view"></main>
+  </div>
+</section>
+<div id="toast"></div>
+<div id="modal"></div>
+
+<script>
+'use strict';
+/* =========================================================
+   USMS — Universitet talabalarini boshqarish tizimi
+   Muallif: Kozibayeva Shoxista Alisher qizi (KIDT-236)
+   Bitta faylli SPA: HTML + CSS + JavaScript, ma'lumotlar localStorage da.
+   ========================================================= */
+const KEY='usms_db_v1', SKEY='usms_session';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=p=>p+'-'+Math.random().toString(36).slice(2,8);
+const TODAY=new Date();
+const iso=d=>d.toISOString().slice(0,10);
+const fmtD=s=>{const [y,m,d]=s.split('-');return d+'.'+m+'.'+y};
+const MONTHS=['yanvar','fevral','mart','aprel','may','iyun','iyul','avgust','sentabr','oktabr','noyabr','dekabr'];
+const DAYS=['yakshanba','dushanba','seshanba','chorshanba','payshanba','juma','shanba'];
+
+/* ---------- RBAC ---------- */
+const ROLES={
+  admin:{name:'Administrator',perms:['*']},
+  registrar:{name:'Dekanat xodimi',perms:['dashboard.view','groups.read','groups.manage','students.read','students.manage','subjects.read','subjects.manage','grades.read','attendance.read','reports.read','users.read','pm.read']},
+  teacher:{name:"O'qituvchi",perms:['dashboard.view','groups.read','students.read','subjects.read','grades.read','grades.manage','attendance.read','attendance.manage','reports.read']},
+  curator:{name:'Kurator (tyutor)',perms:['dashboard.view','groups.read','students.read','students.manage','grades.read','attendance.read','attendance.manage','reports.read']},
+  student:{name:'Talaba',perms:['me.view']}
+};
+const can=p=>{const u=cur();if(!u)return false;const ps=ROLES[u.role].perms;return ps.includes('*')||ps.includes(p)};
+
+/* ---------- Seed ---------- */
+const FIRST_M=['Jasur','Sardor','Bekzod','Otabek','Diyor','Aziz','Sherzod','Javohir','Ulug\'bek','Behruz','Islom','Doston'];
+const FIRST_F=['Madina','Nilufar','Dilnoza','Gulnoza','Shahnoza','Malika','Zarina','Sevara','Mohira','Nodira','Kamola','Feruza'];
+const LAST=['Rahimov','Karimov','Sobirov','Yusupov','Matyoqubov','Qurbonov','Otajonov','Ismoilov','Bekchanov','Xudoyberganov','Saparov','Jumaniyozov','Ro\'zimov','Allayorov'];
+function seed(){
+  let r=7;const rnd=()=>{r=(r*16807)%2147483647;return r/2147483647};
+  const fac=[{id:'F1',name:'Intellektual ilmlar va texnologiyalar fakulteti'},{id:'F2',name:'Muhandislik fakulteti'}];
+  const groups=[
+    {id:'G1',code:'KIDT-236',fac:'F1',dir:'Kompyuter ilmlari va dasturlash texnologiyalari',course:3,form:'Masofaviy',status:'faol',curator:'U4'},
+    {id:'G2',code:'KIDT-235',fac:'F1',dir:'Kompyuter ilmlari va dasturlash texnologiyalari',course:3,form:'Masofaviy',status:'faol',curator:'U4'},
+    {id:'G3',code:'AT-221',fac:'F1',dir:'Axborot tizimlari va texnologiyalari',course:4,form:'Kunduzgi',status:'faol',curator:null},
+    {id:'G4',code:'EE-241',fac:'F2',dir:'Elektr energetikasi',course:2,form:'Kunduzgi',status:'faol',curator:null}];
+  const subjects=[
+    {id:'S1',name:'Loyihalarni boshqarish',credit:6,teacher:'U3',groups:['G1','G2']},
+    {id:'S2',name:"Sun'iy intellekt",credit:6,teacher:'U3',groups:['G1','G2','G3']},
+    {id:'S3',name:"Ma'lumotlar bazasi",credit:5,teacher:'U6',groups:['G1','G3']},
+    {id:'S4',name:'Web dasturlash',credit:5,teacher:'U6',groups:['G2','G3']},
+    {id:'S5',name:'Oliy matematika',credit:4,teacher:'U6',groups:['G4']}];
+  const students=[];let n=1;
+  groups.forEach(g=>{const cnt=g.id==='G1'?12:9;for(let i=0;i<cnt;i++){const f=rnd()<.5;const fn=(f?FIRST_F:FIRST_M)[Math.floor(rnd()*12)];let ln=LAST[Math.floor(rnd()*LAST.length)];if(f)ln+='a';
+    students.push({id:'T'+String(n).padStart(3,'0'),rec:'2023'+String(1000+n),last:ln,first:fn,gender:f?'A':'E',group:g.id,phone:'+998 9'+Math.floor(rnd()*10)+' '+String(Math.floor(rnd()*9000000)+1000000).replace(/(\d{3})(\d{2})(\d{2})/,'$1-$2-$3'),status:rnd()<.06?'akademik ta\'til':'o\'qiydi',year:2023,email:'t'+n+'@student.usms.uz'});n++;}});
+  // demo student account owner
+  students[0].last='Kozibayeva';students[0].first='Shoxista';students[0].gender='A';students[0].status="o'qiydi";
+  const grades=[];
+  students.forEach(s=>subjects.filter(sb=>sb.groups.includes(s.group)).forEach(sb=>{const base=45+rnd()*50;
+    grades.push({id:uid('B'),student:s.id,subject:sb.id,jn:Math.min(30,Math.round(base*.3+rnd()*4)),on:Math.min(20,Math.round(base*.2+rnd()*3)),yn:rnd()<.12?null:Math.min(50,Math.round(base*.5+rnd()*5))});}));
+  const att=[];
+  for(let k=6;k>=0;k--){const d=new Date(TODAY);d.setDate(d.getDate()-k);if(d.getDay()===0)continue;const ds=iso(d);
+    groups.forEach(g=>subjects.filter(sb=>sb.groups.includes(g.id)).slice(0,1).forEach(sb=>students.filter(s=>s.group===g.id).forEach(s=>{const x=rnd();att.push({id:uid('D'),student:s.id,subject:sb.id,date:ds,st:x<.86?'p':x<.95?'a':'s'});})));}
+  const users=[
+    {id:'U1',name:'Kozibayeva Shoxista',email:'admin@usms.uz',pass:'admin123',role:'admin',active:true},
+    {id:'U2',name:'Saparova Dilnoza',email:'dekanat@usms.uz',pass:'dekanat123',role:'registrar',active:true},
+    {id:'U3',name:'Xusainov Shixnazar',email:'teacher@usms.uz',pass:'teacher123',role:'teacher',active:true},
+    {id:'U4',name:'Otajonova Gulnora',email:'kurator@usms.uz',pass:'kurator123',role:'curator',active:true},
+    {id:'U5',name:'Kozibayeva Shoxista (talaba)',email:'student@usms.uz',pass:'student123',role:'student',active:true,student:'T001'},
+    {id:'U6',name:'Rahimov Bahodir',email:'r.bahodir@usms.uz',pass:'teacher123',role:'teacher',active:true}];
+  const stages=[
+    ['Arxitektura va foydalanuvchilar','2026-11-23','2026-12-06','Login, rollar, ruxsatlar, DB ulanishi'],
+    ['Fakultetlar va guruhlar','2026-12-07','2026-12-20',"Yo'nalishlar va o'quv guruhlari katalogi"],
+    ['Talabalar bazasi','2026-12-21','2027-01-03',"Talaba profili, holati va o'qish tarixi"],
+    ["Fanlar va o'quv yuklamasi",'2027-01-04','2027-01-17',"Fanlar, kreditlar, o'qituvchini biriktirish"],
+    ['Baholash tizimi','2027-01-18','2027-01-31',"Baholar jurnali, o'rtacha ball va GPA"],
+    ['Davomat va hisobotlar','2027-02-01','2027-02-14','Davomat jurnali, qoldirilgan soatlar, hisobotlar'],
+    ['Dashboard, test va deploy','2027-02-15','2027-02-28','Yagona tizim, testlar, serverga joylash']].map((s,i)=>({n:i+1,name:s[0],start:s[1],end:s[2],res:s[3]}));
+  const tasks=[
+    ['Loyiha xartiyasini tuzish',1,'done'],['GitHub repozitoriyasini yaratish',1,'done'],['Login va JWT autentifikatsiyasi',1,'done'],['Rollar va ruxsatlar (RBAC)',1,'review'],['Audit jurnali',1,'progress'],
+    ['Fakultet va guruhlar CRUD',2,'todo'],['Talabalar ro\'yxati va qidiruv',3,'todo'],['Fanlarni guruhlarga biriktirish',4,'todo'],['Baholar jurnali va GPA',5,'todo'],['Davomat jurnali',6,'todo'],['CI/CD va deploy',7,'todo']].map((t,i)=>({id:'K'+(i+1),title:t[0],stage:t[1],st:t[2]}));
+  const risks=[
+    ['Talablarning o\'zgarishi','O\'rta','Yuqori','Har bosqichda TT ni tasdiqlash'],
+    ['Muddatning qisqarishi','Yuqori','O\'rta','MVP prioriteti, haftalik nazorat'],
+    ['Ma\'lumotlar yo\'qolishi','Past','Yuqori','Git, zaxira nusxa, migratsiyalar'],
+    ['Baholarning noto\'g\'ri kiritilishi','O\'rta','Yuqori','Cheklovlar (0–100), audit jurnali'],
+    ['Shaxsiy ma\'lumotlar sizib chiqishi','Past','Yuqori','RBAC, parol xeshi, HTTPS']].map((r,i)=>({id:'R'+(i+1),name:r[0],p:r[1],i:r[2],m:r[3]}));
+  return {fac,groups,subjects,students,grades,att,users,stages,tasks,risks,audit:[{id:uid('A'),at:new Date().toISOString(),user:'Tizim',action:'SEED',obj:'Boshlang\'ich ma\'lumotlar yuklandi'}]};
+}
+let db;
+function load(){try{db=JSON.parse(localStorage.getItem(KEY))}catch(e){db=null}if(!db||!db.users){db=seed();save()}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}}
+function audit(action,obj){const u=cur();db.audit.unshift({id:uid('A'),at:new Date().toISOString(),user:u?u.name:'—',action,obj});db.audit=db.audit.slice(0,500);save()}
+function cur(){const id=(()=>{try{return sessionStorage.getItem(SKEY)}catch(e){return window._sid}})();return db.users.find(u=>u.id===id&&u.active)}
+function setSess(id){try{id?sessionStorage.setItem(SKEY,id):sessionStorage.removeItem(SKEY)}catch(e){window._sid=id}}
+
+/* ---------- helpers ---------- */
+const G=id=>db.groups.find(g=>g.id===id)||{code:'—'};
+const SUB=id=>db.subjects.find(s=>s.id===id)||{name:'—'};
+const ST=id=>db.students.find(s=>s.id===id);
+const U=id=>db.users.find(u=>u.id===id)||{name:'—'};
+const fio=s=>s?s.last+' '+s.first:'—';
+const initials=n=>n.split(' ').slice(0,2).map(x=>x[0]).join('').toUpperCase();
+function total(g){return (g.jn||0)+(g.on||0)+(g.yn??0)}
+function letter(t,hasY){if(!hasY)return['—','t-mut'];if(t>=86)return['5 (A)','t-ok'];if(t>=71)return['4 (B)','t-inf'];if(t>=55)return['3 (C)','t-warn'];return['2 (F)','t-bad']}
+function gp(t){return t>=86?5:t>=71?4:t>=55?3:2}
+function studentStats(sid){const gs=db.grades.filter(g=>g.student===sid);const fin=gs.filter(g=>g.yn!=null);
+  let cr=0,sum=0;fin.forEach(g=>{const c=SUB(g.subject).credit||1;cr+=c;sum+=gp(total(g))*c});
+  const avg=gs.length?gs.reduce((a,g)=>a+total(g),0)/gs.length:0;
+  const a=db.att.filter(x=>x.student===sid);const abs=a.filter(x=>x.st==='a').length*2,exc=a.filter(x=>x.st==='s').length*2;
+  const debt=gs.filter(g=>g.yn!=null&&total(g)<55).length;
+  return {gpa:cr?sum/cr:0,avg,abs,exc,debt,att:a.length?a.filter(x=>x.st==='p').length/a.length*100:100}}
+function toast(m,e){const d=document.createElement('div');d.className='ts'+(e?' e':'');d.textContent=m;$('#toast').append(d);setTimeout(()=>d.remove(),3200)}
+function modal(html){$('#modal').innerHTML='<div class="mb" onclick="if(event.target===this)closeM()"><div class="md">'+html+'</div></div>'}
+function closeM(){$('#modal').innerHTML=''}
+function confirmBox(msg,fn){modal(`<h2>Tasdiqlang</h2><p style="margin-top:8px">${esc(msg)}</p><div class="act"><button class="btn" onclick="closeM()">Bekor qilish</button><button class="btn p" id="okb">Ha, davom etish</button></div>`);$('#okb').onclick=()=>{closeM();fn()}}
+function csv(name,rows){const s='﻿'+rows.map(r=>r.map(c=>'"'+String(c??'').replace(/"/g,'""')+'"').join(';')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([s],{type:'text/csv'}));a.download=name;a.click();toast('CSV fayl yuklab olindi')}
+const opt=(arr,sel,lab)=>arr.map(x=>`<option value="${esc(x[0])}" ${x[0]===sel?'selected':''}>${esc(x[1])}</option>`).join('');
+const stTag=s=>s==="o'qiydi"?'<span class="tag t-ok">o\'qiydi</span>':s==='chetlatilgan'?'<span class="tag t-bad">chetlatilgan</span>':s==='bitirgan'?'<span class="tag t-pur">bitirgan</span>':'<span class="tag t-warn">'+esc(s)+'</span>';
+
+/* ---------- navigation ---------- */
+const PAGES=[
+  ['ASOSIY'],
+  ['dashboard','Dashboard','dashboard.view'],
+  ['me','Mening sahifam','me.view'],
+  ['groups','Guruhlar','groups.read'],
+  ['students','Talabalar','students.read'],
+  ['subjects','Fanlar','subjects.read'],
+  ['grades','Baholar jurnali','grades.read'],
+  ['attendance','Davomat','attendance.read'],
+  ['reports','Hisobotlar','reports.read'],
+  ['LOYIHA BOSHQARUVI'],
+  ['sprints','Sprint doskasi','pm.read'],
+  ['plan','Reja va risklar','pm.read'],
+  ['BOSHQARUV'],
+  ['users','Foydalanuvchilar','users.read'],
+  ['roles','Rollar va ruxsatlar','roles.read'],
+  ['audit','Audit jurnali','audit.read']];
+function renderNav(page){let h='',pend=null;PAGES.forEach(p=>{if(p.length===1){pend=p[0];return}if(!can(p[2]))return;if(p[0]==='me'&&cur().role!=='student')return;if(pend){h+=`<div class="sec">${pend}</div>`;pend=null}h+=`<a class="it ${p[0]===page?'on':''}" href="#/${p[0]}">${p[1]}</a>`});$('#nav').innerHTML=h}
+function route(){const u=cur();if(!u){$('#app').classList.add('hidden');$('#login').classList.remove('hidden');return}
+  $('#login').classList.add('hidden');$('#app').classList.remove('hidden');
+  let page=(location.hash.replace('#/','')||'').split('?')[0];const def=u.role==='student'?'me':'dashboard';
+  const P=PAGES.find(p=>p[0]===page&&p.length>1);if(!P){location.hash='#/'+def;return}
+  if(!can(P[2])){$('#view').innerHTML=`<div class="card empty"><h2 style="color:var(--bad)">403 — Ruxsat yo'q</h2><p>Bu bo'limni ko'rish uchun «${P[2]}» ruxsati kerak.</p></div>`;renderNav(page);$('#crumb').textContent=P[1];return}
+  renderNav(page);$('#crumb').textContent=P[1];$('#side').classList.remove('open');
+  ['meav','meav2'].forEach(i=>$('#'+i).textContent=initials(u.name));['mename','mename2'].forEach(i=>$('#'+i).textContent=u.name);['merole','merole2'].forEach(i=>$('#'+i).textContent=ROLES[u.role].name);
+  $('#today').textContent=TODAY.getDate()+'-'+MONTHS[TODAY.getMonth()]+', '+TODAY.getFullYear()+' · '+DAYS[TODAY.getDay()];
+  V[page]();window.scrollTo(0,0)}
+window.addEventListener('hashchange',route);
+
+/* ---------- login ---------- */
+$('#demo').innerHTML=db_demo();
+function db_demo(){return [['admin@usms.uz','admin123','Administrator'],['dekanat@usms.uz','dekanat123','Dekanat xodimi'],['teacher@usms.uz','teacher123',"O'qituvchi"],['kurator@usms.uz','kurator123','Kurator'],['student@usms.uz','student123','Talaba']].map(d=>`<button type="button" onclick="le.value='${d[0]}';lp.value='${d[1]}'"><b>${d[2]}</b>${d[0]}</button>`).join('')}
+let fails={};
+$('#lf').onsubmit=e=>{e.preventDefault();const em=$('#le').value.trim().toLowerCase(),pw=$('#lp').value;
+  const f=fails[em]||{n:0,until:0};if(Date.now()<f.until){$('#lerr').textContent='Hisob vaqtincha bloklangan. 1 daqiqadan so\'ng urinib ko\'ring.';return}
+  const u=db.users.find(x=>x.email===em);
+  if(!u||u.pass!==pw||!u.active){f.n++;if(f.n>=5){f.until=Date.now()+60000;f.n=0}fails[em]=f;$('#lerr').textContent="Login yoki parol noto'g'ri.";db.audit.unshift({id:uid('A'),at:new Date().toISOString(),user:em||'—',action:'LOGIN_FAILED',obj:'Muvaffaqiyatsiz kirish urinishi'});save();return}
+  fails[em]={n:0,until:0};setSess(u.id);$('#lerr').textContent='';$('#lp').value='';audit('LOGIN_SUCCESS','Tizimga kirdi');location.hash=u.role==='student'?'#/me':'#/dashboard';route();toast('Xush kelibsiz, '+u.name)};
+function logout(){audit('LOGOUT','Tizimdan chiqdi');setSess(null);location.hash='';route()}
+
+/* =========================================================
+   VIEWS
+   ========================================================= */
+const V={};
+
+V.dashboard=()=>{
+  const act=db.students.filter(s=>s.status==="o'qiydi");
+  const todayA=db.att.filter(a=>a.date===iso(TODAY));const lastDate=[...new Set(db.att.map(a=>a.date))].sort().pop();
+  const dayA=todayA.length?todayA:db.att.filter(a=>a.date===lastDate);
+  const pr=dayA.length?dayA.filter(a=>a.st==='p').length/dayA.length*100:0;
+  const stats=act.map(s=>studentStats(s.id));const gpa=stats.filter(x=>x.gpa).reduce((a,x)=>a+x.gpa,0)/(stats.filter(x=>x.gpa).length||1);
+  const debt=stats.filter(x=>x.debt>0).length;
+  const dates=[...new Set(db.att.map(a=>a.date))].sort().slice(-6);
+  const bars=dates.map(d=>{const a=db.att.filter(x=>x.date===d);const p=a.length?a.filter(x=>x.st==='p').length/a.length*100:0;return [d,p]});
+  const recent=db.audit.filter(a=>/GRADE|ATT|STUDENT/.test(a.action)).slice(0,4);
+  const lastG=[...db.grades].sort((a,b)=>(b.upd||'').localeCompare(a.upd||'')).slice(0,5);
+  $('#view').innerHTML=`
+  <div class="ph"><div><h1>Dashboard</h1><p>Universitetning bugungi holati va asosiy ko'rsatkichlari</p></div>
+  <div style="display:flex;gap:8px">${can('students.manage')?'<button class="btn" onclick="location.hash=\'#/students\';setTimeout(()=>studentForm(),50)">+ Talaba qo\'shish</button>':''}${can('attendance.manage')?'<button class="btn p" onclick="location.hash=\'#/attendance\'">Davomat belgilash</button>':''}</div></div>
+  <div class="grid g4">
+    <div class="card kpi"><s>Jami talabalar</s><b>${db.students.length}</b><small>${db.groups.length} ta o'quv guruhi · ${act.length} nafari o'qiydi</small></div>
+    <div class="card kpi" style="border-color:#4f8a2e"><s>Davomat (${fmtD(todayA.length?iso(TODAY):lastDate||iso(TODAY))})</s><b>${pr.toFixed(1)}%</b><small>${dayA.filter(a=>a.st==='p').length} / ${dayA.length} qayd</small></div>
+    <div class="card kpi" style="border-color:#c8611c"><s>O'rtacha GPA</s><b>${gpa.toFixed(2)}</b><small>5 ballik tizimda, kreditga ko'ra</small></div>
+    <div class="card kpi" style="border-color:var(--bad)"><s>Akademik qarzdorlar</s><b>${debt}</b><small>55 balldan past yakuniy natija</small></div>
+  </div>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card"><h3>Davomat — so'nggi kunlar (%)</h3>
+      <div class="bars">${bars.map(b=>`<div class="b">${b[1].toFixed(0)}%<i style="height:${Math.max(4,b[1]*1.4)}px"></i></div>`).join('')}</div>
+      <div class="blab">${bars.map(b=>`<span>${fmtD(b[0]).slice(0,5)}</span>`).join('')}</div></div>
+    <div class="card"><h3>So'nggi harakatlar</h3>${recent.length?recent.map(a=>`<div class="ev"><i class="${/GRADE/.test(a.action)?'t-ok':/ATT/.test(a.action)?'t-bad':'t-inf'}">${a.action.slice(0,2)}</i><div>${esc(a.obj)}<small>${esc(a.user)} · ${new Date(a.at).toLocaleString('uz')}</small></div></div>`).join(''):'<div class="empty">Hozircha harakatlar yo\'q. Baho yoki davomat kiritilganda shu yerda ko\'rinadi.</div>'}</div>
+  </div>
+  <div class="grid g11" style="margin-top:14px">
+    <div class="card"><h3>Guruhlar kesimida</h3><div class="tw"><table><tr><th>Guruh</th><th>Talabalar</th><th>O'rtacha ball</th><th>Davomat</th></tr>
+    ${db.groups.map(g=>{const ss=db.students.filter(s=>s.group===g.id);const st=ss.map(s=>studentStats(s.id));const av=st.reduce((a,x)=>a+x.avg,0)/(st.length||1);const at=st.reduce((a,x)=>a+x.att,0)/(st.length||1);
+      return `<tr><td><b>${esc(g.code)}</b><br><small style="color:var(--mut)">${g.course}-kurs · ${esc(g.form)}</small></td><td>${ss.length}</td><td>${av.toFixed(1)}</td><td><div class="prog"><i style="width:${at}%"></i></div><small>${at.toFixed(1)}%</small></td></tr>`}).join('')}</table></div></div>
+    <div class="card"><h3>Tezkor amallar</h3><div class="qa">
+      <button onclick="location.hash='#/grades'"><b>Baholar jurnali</b><small>JN, ON, YN kiritish</small></button>
+      <button onclick="location.hash='#/attendance'"><b>Davomat</b><small>Bugungi darsni belgilash</small></button>
+      <button onclick="location.hash='#/students'"><b>Talabalar</b><small>Qidiruv va profil</small></button>
+      <button onclick="location.hash='#/reports'"><b>Hisobotlar</b><small>Reyting va qarzdorlar</small></button>
+      <button onclick="location.hash='#/sprints'"><b>Sprint doskasi</b><small>Loyiha vazifalari</small></button>
+      <button onclick="location.hash='#/plan'"><b>Reja va risklar</b><small>7 bosqich va risk registri</small></button>
+    </div></div>
+  </div>`;
+};
+
+/* ----- Guruhlar ----- */
+V.groups=()=>{
+  const m=can('groups.manage');
+  $('#view').innerHTML=`<div class="ph"><div><h1>Guruhlar</h1><p>Fakultetlar, ta'lim yo'nalishlari va o'quv guruhlari</p></div>${m?'<button class="btn p" onclick="groupForm()">+ Yangi guruh</button>':''}</div>
+  <div class="card tw"><table><tr><th>Guruh</th><th>Fakultet / yo'nalish</th><th>Kurs</th><th>Shakl</th><th>Kurator</th><th>Talabalar</th><th>Holat</th>${m?'<th></th>':''}</tr>
+  ${db.groups.map(g=>`<tr><td><b>${esc(g.code)}</b></td><td>${esc((db.fac.find(f=>f.id===g.fac)||{}).name)}<br><small style="color:var(--mut)">${esc(g.dir)}</small></td><td>${g.course}</td><td>${esc(g.form)}</td><td>${g.curator?esc(U(g.curator).name):'<span style="color:var(--mut)">—</span>'}</td><td>${db.students.filter(s=>s.group===g.id).length}</td><td><span class="tag ${g.status==='faol'?'t-ok':'t-mut'}">${esc(g.status)}</span></td>${m?`<td style="white-space:nowrap"><button class="btn s" onclick="groupForm('${g.id}')">Tahrirlash</button> <button class="btn s d" onclick="delGroup('${g.id}')">O'chirish</button></td>`:''}</tr>`).join('')}</table></div>`;
+};
+function groupForm(id){const g=id?db.groups.find(x=>x.id===id):{code:'',fac:'F1',dir:'',course:1,form:'Kunduzgi',status:'faol',curator:null};
+  modal(`<h2>${id?'Guruhni tahrirlash':'Yangi guruh'}</h2>
+  <div class="row2"><div><label class="f">Guruh kodi *</label><input class="in" style="width:100%" id="g_code" value="${esc(g.code)}" placeholder="KIDT-236"></div>
+  <div><label class="f">Kurs</label><select class="in" style="width:100%" id="g_course">${opt([1,2,3,4].map(c=>[String(c),c+'-kurs']),String(g.course))}</select></div></div>
+  <label class="f">Fakultet</label><select class="in" style="width:100%" id="g_fac">${opt(db.fac.map(f=>[f.id,f.name]),g.fac)}</select>
+  <label class="f">Ta'lim yo'nalishi *</label><input class="in" style="width:100%" id="g_dir" value="${esc(g.dir)}">
+  <div class="row2"><div><label class="f">Ta'lim shakli</label><select class="in" style="width:100%" id="g_form">${opt(['Kunduzgi','Sirtqi','Masofaviy'].map(x=>[x,x]),g.form)}</select></div>
+  <div><label class="f">Holat</label><select class="in" style="width:100%" id="g_st">${opt(['faol','bitirgan','arxivlangan'].map(x=>[x,x]),g.status)}</select></div></div>
+  <label class="f">Kurator</label><select class="in" style="width:100%" id="g_cur"><option value="">— tanlanmagan —</option>${opt(db.users.filter(u=>u.role==='curator').map(u=>[u.id,u.name]),g.curator)}</select>
+  <div class="err" id="g_err"></div>
+  <div class="act"><button class="btn" onclick="closeM()">Bekor qilish</button><button class="btn p" onclick="saveGroup('${id||''}')">Saqlash</button></div>`)}
+function saveGroup(id){const code=$('#g_code').value.trim().toUpperCase(),dir=$('#g_dir').value.trim();
+  if(!/^[A-Z]{1,6}-\d{3}$/.test(code)){$('#g_err').textContent='Guruh kodi «KIDT-236» ko\'rinishida bo\'lishi kerak.';return}
+  if(!dir){$('#g_err').textContent="Ta'lim yo'nalishini kiriting.";return}
+  if(db.groups.some(g=>g.code===code&&g.id!==id)){$('#g_err').textContent='Bunday kodli guruh mavjud.';return}
+  const d={code,dir,course:+$('#g_course').value,fac:$('#g_fac').value,form:$('#g_form').value,status:$('#g_st').value,curator:$('#g_cur').value||null};
+  if(id){Object.assign(db.groups.find(g=>g.id===id),d);audit('GROUP_UPDATED',code+' guruhi tahrirlandi')}else{db.groups.push({id:uid('G'),...d});audit('GROUP_CREATED',code+' guruhi yaratildi')}
+  save();closeM();toast('Guruh saqlandi');V.groups()}
+function delGroup(id){const g=G(id);if(db.students.some(s=>s.group===id)){toast("Guruhda talabalar bor — avval ularni boshqa guruhga o'tkazing",1);return}
+  confirmBox(g.code+' guruhini o\'chirasizmi?',()=>{db.groups=db.groups.filter(x=>x.id!==id);db.subjects.forEach(s=>s.groups=s.groups.filter(x=>x!==id));audit('GROUP_DELETED',g.code+' guruhi o\'chirildi');save();toast('Guruh o\'chirildi');V.groups()})}
+
+/* ----- Talabalar ----- */
+let sf={q:'',g:'',s:''};
+V.students=()=>{
+  const m=can('students.manage');
+  $('#view').innerHTML=`<div class="ph"><div><h1>Talabalar</h1><p>Talabalar kontingenti, holati va o'qish natijalari</p></div>
+  <div style="display:flex;gap:8px"><button class="btn" onclick="expStudents()">CSV eksport</button>${m?'<button class="btn p" onclick="studentForm()">+ Yangi talaba</button>':''}</div></div>
+  <div class="card"><div class="flt"><input class="in" style="flex:1;min-width:200px" placeholder="F.I.Sh. yoki reyting daftarchasi raqami bo'yicha qidirish..." value="${esc(sf.q)}" oninput="sf.q=this.value;stTable()">
+  <select class="in" onchange="sf.g=this.value;stTable()"><option value="">Barcha guruhlar</option>${opt(db.groups.map(g=>[g.id,g.code]),sf.g)}</select>
+  <select class="in" onchange="sf.s=this.value;stTable()"><option value="">Barcha holatlar</option>${opt(["o'qiydi","akademik ta'til",'chetlatilgan','bitirgan'].map(x=>[x,x]),sf.s)}</select></div>
+  <div class="tw" id="stt"></div></div>`;stTable()};
+function stFiltered(){const q=sf.q.toLowerCase();return db.students.filter(s=>(!sf.g||s.group===sf.g)&&(!sf.s||s.status===sf.s)&&(!q||(fio(s)+' '+s.rec).toLowerCase().includes(q))).sort((a,b)=>fio(a).localeCompare(fio(b)))}
+function stTable(){const list=stFiltered(),m=can('students.manage');
+  $('#stt').innerHTML=list.length?`<table><tr><th>F.I.Sh.</th><th>Reyting daftarchasi</th><th>Guruh</th><th>Telefon</th><th>O'rtacha ball</th><th>Holat</th><th></th></tr>
+  ${list.map(s=>{const x=studentStats(s.id);return `<tr><td><b>${esc(fio(s))}</b></td><td>${esc(s.rec)}</td><td>${esc(G(s.group).code)}</td><td>${esc(s.phone)}</td><td>${x.avg.toFixed(1)}</td><td>${stTag(s.status)}</td>
+  <td style="white-space:nowrap"><button class="btn s" onclick="stCard('${s.id}')">Ko'rish</button>${m?` <button class="btn s" onclick="studentForm('${s.id}')">Tahrirlash</button>`:''}</td></tr>`}).join('')}</table><p style="color:var(--mut);margin-top:8px">Jami: ${list.length} nafar</p>`:'<div class="empty">Hech narsa topilmadi.</div>'}
+function studentForm(id){const s=id?ST(id):{last:'',first:'',rec:'',group:db.groups[0]?.id,phone:'+998 ',status:"o'qiydi",gender:'E',email:''};
+  modal(`<h2>${id?'Talaba ma\'lumotlarini tahrirlash':'Yangi talaba'}</h2>
+  <div class="row2"><div><label class="f">Familiya *</label><input class="in" style="width:100%" id="s_last" value="${esc(s.last)}"></div><div><label class="f">Ism *</label><input class="in" style="width:100%" id="s_first" value="${esc(s.first)}"></div></div>
+  <div class="row2"><div><label class="f">Reyting daftarchasi № *</label><input class="in" style="width:100%" id="s_rec" value="${esc(s.rec)}" placeholder="20231001"></div>
+  <div><label class="f">Guruh</label><select class="in" style="width:100%" id="s_group">${opt(db.groups.map(g=>[g.id,g.code]),s.group)}</select></div></div>
+  <div class="row2"><div><label class="f">Telefon</label><input class="in" style="width:100%" id="s_phone" value="${esc(s.phone)}"></div>
+  <div><label class="f">Holat</label><select class="in" style="width:100%" id="s_st">${opt(["o'qiydi","akademik ta'til",'chetlatilgan','bitirgan'].map(x=>[x,x]),s.status)}</select></div></div>
+  <label class="f">E-mail</label><input class="in" style="width:100%" id="s_email" value="${esc(s.email)}">
+  <div class="err" id="s_err"></div>
+  <div class="act">${id&&cur().role!=='curator'?`<button class="btn d" style="margin-right:auto" onclick="delStudent('${id}')">O'chirish</button>`:''}<button class="btn" onclick="closeM()">Bekor qilish</button><button class="btn p" onclick="saveStudent('${id||''}')">Saqlash</button></div>`)}
+function saveStudent(id){const last=$('#s_last').value.trim(),first=$('#s_first').value.trim(),rec=$('#s_rec').value.trim(),email=$('#s_email').value.trim();
+  const e=t=>{$('#s_err').textContent=t};
+  if(last.length<2||first.length<2)return e('Familiya va ism kamida 2 belgidan iborat bo\'lsin.');
+  if(!/^\d{8}$/.test(rec))return e('Reyting daftarchasi raqami 8 ta raqamdan iborat bo\'lishi kerak.');
+  if(db.students.some(s=>s.rec===rec&&s.id!==id))return e('Bu raqam boshqa talabaga biriktirilgan.');
+  if(email&&!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(email))return e("E-mail noto'g'ri.");
+  const d={last,first,rec,email,group:$('#s_group').value,phone:$('#s_phone').value.trim(),status:$('#s_st').value};
+  if(id){const s=ST(id);const old=s.group;Object.assign(s,d);audit('STUDENT_UPDATED',fio(s)+' ma\'lumotlari yangilandi'+(old!==d.group?' (guruh: '+G(old).code+' → '+G(d.group).code+')':''))}
+  else{const n={id:uid('T'),year:TODAY.getFullYear(),gender:'E',...d};db.students.push(n);audit('STUDENT_CREATED',fio(n)+' talabalar ro\'yxatiga qo\'shildi')}
+  save();closeM();toast('Talaba saqlandi');if(location.hash.includes('students'))V.students()}
+function delStudent(id){const s=ST(id);confirmBox(fio(s)+' o\'chirilsinmi? Uning baholari va davomati ham o\'chadi.',()=>{db.students=db.students.filter(x=>x.id!==id);db.grades=db.grades.filter(g=>g.student!==id);db.att=db.att.filter(a=>a.student!==id);audit('STUDENT_DELETED',fio(s)+' o\'chirildi');save();toast('O\'chirildi');V.students()})}
+function stCard(id){const s=ST(id),x=studentStats(id);const gs=db.grades.filter(g=>g.student===id);
+  modal(`<h2>${esc(fio(s))}</h2><p style="color:var(--mut)">${esc(G(s.group).code)} · reyting daftarchasi ${esc(s.rec)} · ${stTag(s.status)}</p>
+  <div class="grid g3" style="margin-top:14px"><div class="card kpi"><s>GPA</s><b>${x.gpa.toFixed(2)}</b></div><div class="card kpi" style="border-color:#4f8a2e"><s>Davomat</s><b>${x.att.toFixed(0)}%</b></div><div class="card kpi" style="border-color:var(--bad)"><s>Sababsiz</s><b>${x.abs} soat</b></div></div>
+  <h3 style="color:var(--navy);margin:16px 0 6px;font-size:15px">Baholar</h3>${gradeList(gs)}
+  <div class="act"><button class="btn p" onclick="closeM()">Yopish</button></div>`)}
+function gradeList(gs){return gs.length?`<table><tr><th>Fan</th><th>JN</th><th>ON</th><th>YN</th><th>Jami</th><th>Baho</th></tr>${gs.map(g=>{const t=total(g),l=letter(t,g.yn!=null);return `<tr><td>${esc(SUB(g.subject).name)}</td><td>${g.jn}</td><td>${g.on}</td><td>${g.yn??'—'}</td><td><b>${t}</b></td><td><span class="tag ${l[1]}">${l[0]}</span></td></tr>`}).join('')}</table>`:'<div class="empty">Baholar yo\'q</div>'}
+function expStudents(){csv('talabalar.csv',[['F.I.Sh.','Reyting daftarchasi','Guruh','Telefon','E-mail','Holat','O\'rtacha ball','GPA'],...stFiltered().map(s=>{const x=studentStats(s.id);return [fio(s),s.rec,G(s.group).code,s.phone,s.email,s.status,x.avg.toFixed(1),x.gpa.toFixed(2)]})]);audit('STUDENTS_EXPORTED','Talabalar ro\'yxati CSV ga eksport qilindi')}
+
+/* ----- Fanlar ----- */
+V.subjects=()=>{const m=can('subjects.manage');
+  $('#view').innerHTML=`<div class="ph"><div><h1>Fanlar</h1><p>Fanlar, kreditlar va o'qituvchilarni guruhlarga biriktirish</p></div>${m?'<button class="btn p" onclick="subjectForm()">+ Yangi fan</button>':''}</div>
+  <div class="card tw"><table><tr><th>Fan</th><th>Kredit</th><th>O'qituvchi</th><th>Guruhlar</th>${m?'<th></th>':''}</tr>
+  ${db.subjects.map(s=>`<tr><td><b>${esc(s.name)}</b></td><td>${s.credit}</td><td>${esc(U(s.teacher).name)}</td><td>${s.groups.map(g=>`<span class="tag t-inf">${esc(G(g).code)}</span>`).join(' ')||'—'}</td>${m?`<td style="white-space:nowrap"><button class="btn s" onclick="subjectForm('${s.id}')">Tahrirlash</button></td>`:''}</tr>`).join('')}</table></div>`};
+function subjectForm(id){const s=id?SUB(id):{name:'',credit:4,teacher:'',groups:[]};
+  modal(`<h2>${id?'Fanni tahrirlash':'Yangi fan'}</h2><label class="f">Fan nomi *</label><input class="in" style="width:100%" id="f_name" value="${esc(s.name)}">
+  <div class="row2"><div><label class="f">Kredit (1–10)</label><input class="in" style="width:100%" type="number" min="1" max="10" id="f_cr" value="${s.credit}"></div>
+  <div><label class="f">O'qituvchi</label><select class="in" style="width:100%" id="f_t">${opt(db.users.filter(u=>u.role==='teacher').map(u=>[u.id,u.name]),s.teacher)}</select></div></div>
+  <label class="f">Guruhlar</label><div>${db.groups.map(g=>`<label style="margin-right:12px"><input type="checkbox" class="f_g" value="${g.id}" ${s.groups.includes(g.id)?'checked':''}> ${esc(g.code)}</label>`).join('')}</div>
+  <div class="err" id="f_err"></div><div class="act"><button class="btn" onclick="closeM()">Bekor qilish</button><button class="btn p" onclick="saveSubject('${id||''}')">Saqlash</button></div>`)}
+function saveSubject(id){const name=$('#f_name').value.trim(),cr=+$('#f_cr').value;if(name.length<3){$('#f_err').textContent='Fan nomini kiriting.';return}if(!(cr>=1&&cr<=10)){$('#f_err').textContent='Kredit 1 dan 10 gacha.';return}
+  const d={name,credit:cr,teacher:$('#f_t').value,groups:[...document.querySelectorAll('.f_g:checked')].map(x=>x.value)};
+  if(id){Object.assign(SUB(id),d);audit('SUBJECT_UPDATED',name+' fani tahrirlandi')}else{db.subjects.push({id:uid('S'),...d});audit('SUBJECT_CREATED',name+' fani qo\'shildi')}
+  // ensure grade rows exist
+  db.subjects.forEach(sb=>db.students.filter(st=>sb.groups.includes(st.group)).forEach(st=>{if(!db.grades.some(g=>g.student===st.id&&g.subject===sb.id))db.grades.push({id:uid('B'),student:st.id,subject:sb.id,jn:0,on:0,yn:null})}));
+  save();closeM();toast('Fan saqlandi');V.subjects()}
+
+/* ----- Baholar jurnali ----- */
+let gsel={g:'G1',s:'S1'};
+function mySubjects(){const u=cur();return db.subjects.filter(s=>u.role!=='teacher'||s.teacher===u.id)}
+V.grades=()=>{const subs=mySubjects();if(!subs.find(s=>s.id===gsel.s))gsel.s=subs[0]?.id;const sb=SUB(gsel.s);if(sb.groups&&!sb.groups.includes(gsel.g))gsel.g=sb.groups[0];
+  $('#view').innerHTML=`<div class="ph"><div><h1>Baholar jurnali</h1><p>Joriy (JN, max 30), oraliq (ON, max 20) va yakuniy (YN, max 50) nazorat natijalari</p></div><button class="btn" onclick="expGrades()">CSV eksport</button></div>
+  <div class="card"><div class="flt"><select class="in" onchange="gsel.s=this.value;V.grades()">${opt(subs.map(s=>[s.id,s.name]),gsel.s)}</select>
+  <select class="in" onchange="gsel.g=this.value;V.grades()">${opt((sb.groups||[]).map(g=>[g,G(g).code]),gsel.g)}</select>
+  <span style="color:var(--mut);align-self:center">O'qituvchi: ${esc(U(sb.teacher).name)} · ${sb.credit||'—'} kredit</span></div><div class="tw" id="gt"></div></div>
+  <p style="color:var(--mut);margin-top:10px">Baholash shkalasi: 86–100 — «5», 71–85 — «4», 55–70 — «3», 55 dan past — «2» (akademik qarzdorlik). Har bir o'zgarish audit jurnaliga yoziladi.</p>`;gTable()};
+function gTable(){const m=can('grades.manage')&&(cur().role!=='teacher'||SUB(gsel.s).teacher===cur().id);
+  const rows=db.students.filter(s=>s.group===gsel.g).sort((a,b)=>fio(a).localeCompare(fio(b))).map(s=>[s,db.grades.find(g=>g.student===s.id&&g.subject===gsel.s)]).filter(x=>x[1]);
+  $('#gt').innerHTML=rows.length?`<table><tr><th>#</th><th>Talaba</th><th>JN (30)</th><th>ON (20)</th><th>YN (50)</th><th>Jami</th><th>Baho</th></tr>
+  ${rows.map(([s,g],i)=>{const t=total(g),l=letter(t,g.yn!=null);const inp=(k,mx)=>m?`<input class="gin" type="number" min="0" max="${mx}" value="${g[k]??''}" onchange="setGrade('${g.id}','${k}',this.value,${mx},this)">`:(g[k]??'—');
+  return `<tr><td>${i+1}</td><td><b>${esc(fio(s))}</b></td><td>${inp('jn',30)}</td><td>${inp('on',20)}</td><td>${inp('yn',50)}</td><td><b id="tt_${g.id}">${t}</b></td><td id="lt_${g.id}"><span class="tag ${l[1]}">${l[0]}</span></td></tr>`}).join('')}</table>`:'<div class="empty">Bu guruh uchun baholar yo\'q.</div>'}
+function setGrade(id,k,v,mx,el){const g=db.grades.find(x=>x.id===id);const s=ST(g.student);
+  if(v===''&&k==='yn'){g.yn=null}else{const n=Number(v);if(!Number.isInteger(n)||n<0||n>mx){toast(`Qiymat 0 dan ${mx} gacha butun son bo'lishi kerak`,1);el.value=g[k]??'';return}const old=g[k];g[k]=n;audit('GRADE_CHANGED',`${fio(s)} · ${SUB(g.subject).name} · ${k.toUpperCase()}: ${old??'—'} → ${n}`)}
+  g.upd=new Date().toISOString();save();const t=total(g),l=letter(t,g.yn!=null);$('#tt_'+id).textContent=t;$('#lt_'+id).innerHTML=`<span class="tag ${l[1]}">${l[0]}</span>`;toast('Baho saqlandi')}
+function expGrades(){const rows=db.students.filter(s=>s.group===gsel.g).map(s=>[s,db.grades.find(g=>g.student===s.id&&g.subject===gsel.s)]).filter(x=>x[1]);
+  csv('baholar_'+G(gsel.g).code+'.csv',[['Talaba','JN','ON','YN','Jami','Baho'],...rows.map(([s,g])=>[fio(s),g.jn,g.on,g.yn??'',total(g),letter(total(g),g.yn!=null)[0]])])}
+
+/* ----- Davomat ----- */
+let asel={g:'G1',s:'S1',d:iso(TODAY)};
+V.attendance=()=>{const subs=mySubjects();if(!subs.find(s=>s.id===asel.s))asel.s=subs[0]?.id;const sb=SUB(asel.s);if(sb.groups&&!sb.groups.includes(asel.g))asel.g=sb.groups[0];
+  const m=can('attendance.manage');const list=db.students.filter(s=>s.group===asel.g&&s.status==="o'qiydi").sort((a,b)=>fio(a).localeCompare(fio(b)));
+  const rec=sid=>db.att.find(a=>a.student===sid&&a.subject===asel.s&&a.date===asel.d);
+  const cnt={p:0,a:0,s:0,n:0};list.forEach(s=>{const r=rec(s.id);cnt[r?r.st:'n']++});
+  $('#view').innerHTML=`<div class="ph"><div><h1>Davomat</h1><p>Har bir dars (2 akademik soat) bo'yicha davomatni belgilash</p></div>${m?'<button class="btn p" onclick="markAll()">Hammasini «keldi» deb belgilash</button>':''}</div>
+  <div class="card"><div class="flt"><select class="in" onchange="asel.s=this.value;V.attendance()">${opt(subs.map(s=>[s.id,s.name]),asel.s)}</select>
+  <select class="in" onchange="asel.g=this.value;V.attendance()">${opt((sb.groups||[]).map(g=>[g,G(g).code]),asel.g)}</select>
+  <input class="in" type="date" value="${asel.d}" max="${iso(TODAY)}" onchange="asel.d=this.value;V.attendance()">
+  <span class="tag t-ok" style="align-self:center">Keldi: ${cnt.p}</span><span class="tag t-bad" style="align-self:center">Sababsiz: ${cnt.a}</span><span class="tag t-warn" style="align-self:center">Sababli: ${cnt.s}</span><span class="tag t-mut" style="align-self:center">Belgilanmagan: ${cnt.n}</span></div>
+  <div class="tw">${list.length?`<table><tr><th>#</th><th>Talaba</th><th>Holat</th><th>Jami qoldirgan (soat)</th></tr>${list.map((s,i)=>{const r=rec(s.id),st=r?r.st:'';const x=studentStats(s.id);
+   return `<tr><td>${i+1}</td><td><b>${esc(fio(s))}</b></td><td class="att">${m?['p:Keldi','a:Sababsiz','s:Sababli'].map(o=>{const [k,l]=o.split(':');return `<button class="${st===k?'on '+k:''}" onclick="mark('${s.id}','${k}')">${l}</button>`}).join(''):(st?{p:'Keldi',a:'Sababsiz',s:'Sababli'}[st]:'—')}</td><td>${x.abs} sababsiz · ${x.exc} sababli</td></tr>`}).join('')}</table>`:'<div class="empty">Guruhda faol talabalar yo\'q.</div>'}</div></div>`};
+function mark(sid,st){let r=db.att.find(a=>a.student===sid&&a.subject===asel.s&&a.date===asel.d);if(r)r.st=st;else db.att.push({id:uid('D'),student:sid,subject:asel.s,date:asel.d,st});
+  audit('ATTENDANCE_MARKED',`${fio(ST(sid))} · ${fmtD(asel.d)} · ${{p:'keldi',a:'sababsiz qoldirdi',s:'sababli qoldirdi'}[st]}`);save();V.attendance()}
+function markAll(){db.students.filter(s=>s.group===asel.g&&s.status==="o'qiydi").forEach(s=>{if(!db.att.find(a=>a.student===s.id&&a.subject===asel.s&&a.date===asel.d))db.att.push({id:uid('D'),student:s.id,subject:asel.s,date:asel.d,st:'p'})});
+  audit('ATTENDANCE_MARKED',`${G(asel.g).code} · ${fmtD(asel.d)} · belgilanmaganlar «keldi» deb belgilandi`);save();toast('Davomat saqlandi');V.attendance()}
+
+/* ----- Hisobotlar ----- */
+let rtab='rating';
+V.reports=()=>{const act=db.students.filter(s=>s.status==="o'qiydi").map(s=>({s,x:studentStats(s.id)}));
+  const tabs=[['rating','Reyting (GPA)'],['debt','Akademik qarzdorlar'],['att','Davomat bo\'yicha'],['groups','Guruhlar kesimida']];
+  let body='';
+  if(rtab==='rating'){const l=act.filter(r=>r.x.gpa).sort((a,b)=>b.x.gpa-a.x.gpa);body=`<table><tr><th>O'rin</th><th>Talaba</th><th>Guruh</th><th>GPA</th><th>O'rtacha ball</th></tr>${l.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(fio(r.s))}</td><td>${esc(G(r.s.group).code)}</td><td><b>${r.x.gpa.toFixed(2)}</b></td><td>${r.x.avg.toFixed(1)}</td></tr>`).join('')}</table>`;window._rep=[['O\'rin','Talaba','Guruh','GPA','O\'rtacha ball'],...l.map((r,i)=>[i+1,fio(r.s),G(r.s.group).code,r.x.gpa.toFixed(2),r.x.avg.toFixed(1)])]}
+  if(rtab==='debt'){const l=[];act.forEach(r=>db.grades.filter(g=>g.student===r.s.id&&g.yn!=null&&total(g)<55).forEach(g=>l.push([r.s,g])));body=l.length?`<table><tr><th>Talaba</th><th>Guruh</th><th>Fan</th><th>Jami ball</th></tr>${l.map(([s,g])=>`<tr><td>${esc(fio(s))}</td><td>${esc(G(s.group).code)}</td><td>${esc(SUB(g.subject).name)}</td><td><span class="tag t-bad">${total(g)}</span></td></tr>`).join('')}</table>`:'<div class="empty">Akademik qarzdorlar yo\'q</div>';window._rep=[['Talaba','Guruh','Fan','Jami'],...l.map(([s,g])=>[fio(s),G(s.group).code,SUB(g.subject).name,total(g)])]}
+  if(rtab==='att'){const l=act.sort((a,b)=>b.x.abs-a.x.abs);body=`<table><tr><th>Talaba</th><th>Guruh</th><th>Davomat</th><th>Sababsiz (soat)</th><th>Sababli (soat)</th></tr>${l.map(r=>`<tr><td>${esc(fio(r.s))}</td><td>${esc(G(r.s.group).code)}</td><td>${r.x.att.toFixed(1)}%</td><td>${r.x.abs>=6?`<span class="tag t-bad">${r.x.abs}</span>`:r.x.abs}</td><td>${r.x.exc}</td></tr>`).join('')}</table>`;window._rep=[['Talaba','Guruh','Davomat %','Sababsiz','Sababli'],...l.map(r=>[fio(r.s),G(r.s.group).code,r.x.att.toFixed(1),r.x.abs,r.x.exc])]}
+  if(rtab==='groups'){const l=db.groups.map(g=>{const st=act.filter(r=>r.s.group===g.id);const n=st.length||1;return [g,st.length,st.reduce((a,r)=>a+r.x.avg,0)/n,st.reduce((a,r)=>a+r.x.gpa,0)/n,st.reduce((a,r)=>a+r.x.att,0)/n,st.filter(r=>r.x.debt).length]});
+    body=`<table><tr><th>Guruh</th><th>Faol talabalar</th><th>O'rtacha ball</th><th>O'rtacha GPA</th><th>Davomat</th><th>Qarzdorlar</th></tr>${l.map(r=>`<tr><td><b>${esc(r[0].code)}</b></td><td>${r[1]}</td><td>${r[2].toFixed(1)}</td><td>${r[3].toFixed(2)}</td><td>${r[4].toFixed(1)}%</td><td>${r[5]}</td></tr>`).join('')}</table>`;window._rep=[['Guruh','Talabalar','O\'rtacha ball','GPA','Davomat %','Qarzdorlar'],...l.map(r=>[r[0].code,r[1],r[2].toFixed(1),r[3].toFixed(2),r[4].toFixed(1),r[5]])]}
+  $('#view').innerHTML=`<div class="ph"><div><h1>Hisobotlar</h1><p>Reyting, o'zlashtirish va davomat tahlili</p></div><div style="display:flex;gap:8px"><button class="btn" onclick="window.print()">Chop etish</button><button class="btn p" onclick="csv('hisobot_${rtab}.csv',window._rep);audit('REPORT_EXPORTED','Hisobot eksport qilindi: ${rtab}')">CSV eksport</button></div></div>
+  <div class="flt">${tabs.map(t=>`<button class="btn ${rtab===t[0]?'p':''}" onclick="rtab='${t[0]}';V.reports()">${t[1]}</button>`).join('')}</div><div class="card tw">${body}</div>`};
+
+/* ----- Talaba sahifasi ----- */
+V.me=()=>{const u=cur();const s=ST(u.student);if(!s){$('#view').innerHTML='<div class="card empty">Profil topilmadi</div>';return}
+  const x=studentStats(s.id);const gs=db.grades.filter(g=>g.student===s.id);const a=db.att.filter(r=>r.student===s.id).sort((p,q)=>q.date.localeCompare(p.date)).slice(0,10);
+  $('#view').innerHTML=`<div class="ph"><div><h1>${esc(fio(s))}</h1><p>${esc(G(s.group).code)} · ${esc(G(s.group).dir)} · reyting daftarchasi ${esc(s.rec)}</p></div></div>
+  <div class="grid g4"><div class="card kpi"><s>GPA</s><b>${x.gpa.toFixed(2)}</b><small>5 ballik tizimda</small></div><div class="card kpi" style="border-color:#4f8a2e"><s>Davomat</s><b>${x.att.toFixed(0)}%</b></div>
+  <div class="card kpi" style="border-color:var(--bad)"><s>Sababsiz qoldirgan</s><b>${x.abs} soat</b></div><div class="card kpi" style="border-color:#c8611c"><s>Akademik qarz</s><b>${x.debt}</b><small>fan</small></div></div>
+  <div class="grid g2" style="margin-top:14px"><div class="card"><h3>Mening baholarim</h3><div class="tw">${gradeList(gs)}</div></div>
+  <div class="card"><h3>So'nggi davomat</h3>${a.map(r=>`<div class="ev"><i class="${r.st==='p'?'t-ok':r.st==='a'?'t-bad':'t-warn'}">${r.st==='p'?'✓':r.st==='a'?'✗':'S'}</i><div>${esc(SUB(r.subject).name)}<small>${fmtD(r.date)}</small></div></div>`).join('')||'<div class="empty">Qayd yo\'q</div>'}</div></div>`};
+
+/* ----- Sprint doskasi (loyiha boshqaruvi) ----- */
+const KCOL=[['todo','Rejada'],['progress','Jarayonda'],['review','Ko\'rib chiqishda (PR)'],['done','Bajarildi']];
+V.sprints=()=>{const m=cur().role==='admin';
+  $('#view').innerHTML=`<div class="ph"><div><h1>Sprint doskasi</h1><p>Loyiha vazifalari (backlog) — 7 bosqich bo'yicha, Pull Request holati bilan</p></div>${m?'<button class="btn p" onclick="taskForm()">+ Vazifa</button>':''}</div>
+  <div class="kan">${KCOL.map(([k,l],ci)=>`<div class="col"><h4>${l} · ${db.tasks.filter(t=>t.st===k).length}</h4>${db.tasks.filter(t=>t.st===k).map(t=>`<div class="tk"><b>${esc(t.title)}</b><small>${t.stage}-bosqich · ${esc(db.stages[t.stage-1].name)}</small>${m?`<div class="mv">${ci>0?`<button class="btn s" onclick="mvTask('${t.id}',-1)">←</button>`:''}${ci<3?`<button class="btn s" onclick="mvTask('${t.id}',1)">→</button>`:''}</div>`:''}</div>`).join('')}</div>`).join('')}</div>`};
+function mvTask(id,d){const t=db.tasks.find(x=>x.id===id);const i=KCOL.findIndex(c=>c[0]===t.st)+d;t.st=KCOL[i][0];audit('TASK_MOVED',`«${t.title}» → ${KCOL[i][1]}`);save();V.sprints()}
+function taskForm(){modal(`<h2>Yangi vazifa</h2><label class="f">Nomi</label><input class="in" style="width:100%" id="k_t"><label class="f">Bosqich</label><select class="in" style="width:100%" id="k_s">${opt(db.stages.map(s=>[String(s.n),s.n+'. '+s.name]),'1')}</select><div class="err" id="k_e"></div><div class="act"><button class="btn" onclick="closeM()">Bekor qilish</button><button class="btn p" onclick="addTask()">Qo'shish</button></div>`)}
+function addTask(){const t=$('#k_t').value.trim();if(t.length<3){$('#k_e').textContent='Vazifa nomini kiriting';return}db.tasks.push({id:uid('K'),title:t,stage:+$('#k_s').value,st:'todo'});audit('TASK_CREATED','«'+t+'» vazifasi qo\'shildi');save();closeM();V.sprints()}
+
+/* ----- Reja va risklar ----- */
+V.plan=()=>{const st=db.stages,min=new Date(st[0].start),max=new Date(st[6].end),span=(max-min)/864e5;const now=TODAY;
+  const prog=n=>{const ts=db.tasks.filter(t=>t.stage===n);return ts.length?ts.filter(t=>t.st==='done').length/ts.length*100:0};
+  $('#view').innerHTML=`<div class="ph"><div><h1>Reja va risklar</h1><p>Loyiha bosqichlari (Gantt) va risk registri</p></div></div>
+  <div class="card tw"><h3>Gantt diagrammasi</h3><table class="gantt"><tr><th style="width:28%">Bosqich</th><th style="width:14%">Muddat</th><th>Vaqt shkalasi (23.11.2026 – 28.02.2027)</th><th style="width:10%">Bajarilish</th></tr>
+  ${st.map(s=>{const a=(new Date(s.start)-min)/864e5/span*100,w=((new Date(s.end)-new Date(s.start))/864e5+1)/span*100;const c=new Date(s.end)<now?'done':new Date(s.start)<=now?'cur':'';
+   return `<tr><td><b>${s.n}. ${esc(s.name)}</b><br><small style="color:var(--mut)">${esc(s.res)}</small></td><td>${fmtD(s.start).slice(0,5)}–${fmtD(s.end)}</td><td class="c"><div style="position:relative;height:16px;background:#f3f5f9;border-radius:4px"><div class="bar ${c}" style="position:absolute;left:${a}%;width:${w}%"></div></div></td><td>${prog(s.n).toFixed(0)}%</td></tr>`}).join('')}</table>
+  <p style="color:var(--mut);margin-top:8px"><span class="tag t-warn">joriy bosqich</span> <span class="tag t-ok">yakunlangan</span> <span class="tag t-inf">rejada</span></p></div>
+  <div class="card tw" style="margin-top:14px"><h3>Risk registri</h3><table><tr><th>№</th><th>Risk</th><th>Ehtimoli</th><th>Ta'siri</th><th>Kamaytirish chorasi</th></tr>
+  ${db.risks.map((r,i)=>{const c=x=>x==='Yuqori'?'t-bad':x==='O\'rta'?'t-warn':'t-ok';return `<tr><td>${i+1}</td><td><b>${esc(r.name)}</b></td><td><span class="tag ${c(r.p)}">${esc(r.p)}</span></td><td><span class="tag ${c(r.i)}">${esc(r.i)}</span></td><td>${esc(r.m)}</td></tr>`}).join('')}</table></div>`};
+
+/* ----- Foydalanuvchilar ----- */
+V.users=()=>{const m=can('users.manage');
+  $('#view').innerHTML=`<div class="ph"><div><h1>Foydalanuvchilar</h1><p>Tizim hisoblari va ularning rollari</p></div>${m?'<button class="btn p" onclick="userForm()">+ Yangi foydalanuvchi</button>':''}</div>
+  <div class="card tw"><table><tr><th>F.I.Sh.</th><th>E-mail</th><th>Rol</th><th>Holat</th>${m?'<th></th>':''}</tr>${db.users.map(u=>`<tr><td><span class="av" style="width:28px;height:28px;font-size:10px;margin-right:8px">${initials(u.name)}</span><b>${esc(u.name)}</b></td><td>${esc(u.email)}</td><td><span class="tag t-inf">${ROLES[u.role].name}</span></td><td><span class="tag ${u.active?'t-ok':'t-bad'}">${u.active?'faol':'bloklangan'}</span></td>${m?`<td style="white-space:nowrap"><button class="btn s" onclick="userForm('${u.id}')">Tahrirlash</button> ${u.id!==cur().id?`<button class="btn s ${u.active?'d':''}" onclick="toggleUser('${u.id}')">${u.active?'Bloklash':'Faollashtirish'}</button>`:''}</td>`:''}</tr>`).join('')}</table></div>`};
+function userForm(id){const u=id?db.users.find(x=>x.id===id):{name:'',email:'',role:'teacher'};
+  modal(`<h2>${id?'Foydalanuvchini tahrirlash':'Yangi foydalanuvchi'}</h2><label class="f">F.I.Sh. *</label><input class="in" style="width:100%" id="u_n" value="${esc(u.name)}">
+  <label class="f">E-mail *</label><input class="in" style="width:100%" id="u_e" value="${esc(u.email)}"><label class="f">Rol</label><select class="in" style="width:100%" id="u_r">${opt(Object.entries(ROLES).map(([k,r])=>[k,r.name]),u.role)}</select>
+  <label class="f">${id?'Yangi parol (o\'zgartirmaslik uchun bo\'sh qoldiring)':'Vaqtinchalik parol *'}</label><input class="in" style="width:100%" id="u_p" type="password">
+  <div class="err" id="u_err"></div><div class="act"><button class="btn" onclick="closeM()">Bekor qilish</button><button class="btn p" onclick="saveUser('${id||''}')">Saqlash</button></div>`)}
+function saveUser(id){const n=$('#u_n').value.trim(),e=$('#u_e').value.trim().toLowerCase(),p=$('#u_p').value,r=$('#u_r').value;const er=t=>{$('#u_err').textContent=t};
+  if(n.length<3)return er('F.I.Sh. ni kiriting');if(!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/.test(e))return er("E-mail noto'g'ri");if(db.users.some(u=>u.email===e&&u.id!==id))return er('Bu e-mail band');
+  if((!id||p)&&p.length<8)return er('Parol kamida 8 belgi bo\'lsin');
+  if(id){const u=db.users.find(x=>x.id===id);const or=u.role;Object.assign(u,{name:n,email:e,role:r});if(p)u.pass=p;audit('USER_UPDATED',n+(or!==r?` · rol: ${ROLES[or].name} → ${ROLES[r].name}`:''))}
+  else{db.users.push({id:uid('U'),name:n,email:e,pass:p,role:r,active:true});audit('USER_CREATED',n+' ('+ROLES[r].name+') yaratildi')}
+  save();closeM();toast('Saqlandi');V.users()}
+function toggleUser(id){const u=db.users.find(x=>x.id===id);confirmBox(`${u.name} hisobini ${u.active?'bloklash':'faollashtirish'}?`,()=>{u.active=!u.active;audit(u.active?'USER_ACTIVATED':'USER_BLOCKED',u.name);save();V.users()})}
+
+/* ----- Rollar ----- */
+V.roles=()=>{const perms=['dashboard.view','groups.read','groups.manage','students.read','students.manage','subjects.read','subjects.manage','grades.read','grades.manage','attendance.read','attendance.manage','reports.read','users.read','users.manage','roles.read','audit.read','pm.read','me.view'];
+  const has=(r,p)=>ROLES[r].perms.includes('*')?p!=='me.view':ROLES[r].perms.includes(p);
+  $('#view').innerHTML=`<div class="ph"><div><h1>Rollar va ruxsatlar</h1><p>RBAC matritsasi — tekshiruv rol nomi bo'yicha emas, ruxsat (permission) bo'yicha bajariladi</p></div></div>
+  <div class="card tw"><table><tr><th>Ruxsat</th>${Object.values(ROLES).map(r=>`<th style="text-align:center">${r.name}</th>`).join('')}</tr>
+  ${perms.map(p=>`<tr><td><code>${p}</code></td>${Object.keys(ROLES).map(r=>`<td style="text-align:center">${has(r,p)?'<span style="color:var(--ok);font-weight:700">✓</span>':'<span style="color:#bbb">—</span>'}</td>`).join('')}</tr>`).join('')}</table></div>`};
+
+/* ----- Audit ----- */
+let af='';
+V.audit=()=>{$('#view').innerHTML=`<div class="ph"><div><h1>Audit jurnali</h1><p>Kim, nima qildi, qachon — yozuvlar faqat qo'shiladi (append-only)</p></div><button class="btn" onclick="csv('audit.csv',[['Vaqt','Foydalanuvchi','Amal','Tafsilot'],...db.audit.map(a=>[a.at,a.user,a.action,a.obj])])">CSV eksport</button></div>
+  <div class="card"><div class="flt"><input class="in" style="flex:1" placeholder="Amal yoki foydalanuvchi bo'yicha filtr..." value="${esc(af)}" oninput="af=this.value;auT()"></div><div class="tw" id="aut"></div></div>`;auT()};
+function auT(){const q=af.toLowerCase();const l=db.audit.filter(a=>!q||(a.user+a.action+a.obj).toLowerCase().includes(q)).slice(0,200);
+  $('#aut').innerHTML=`<table><tr><th>Vaqt</th><th>Foydalanuvchi</th><th>Amal</th><th>Tafsilot</th></tr>${l.map(a=>`<tr><td style="white-space:nowrap">${new Date(a.at).toLocaleString('uz')}</td><td>${esc(a.user)}</td><td><span class="tag ${/FAIL|DELET|BLOCK/.test(a.action)?'t-bad':/LOGIN|LOGOUT/.test(a.action)?'t-mut':'t-inf'}">${esc(a.action)}</span></td><td>${esc(a.obj)}</td></tr>`).join('')}</table>`}
+
+/* ---------- start ---------- */
+load();route();
+</script>
+</body>
+</html>
