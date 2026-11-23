@@ -3,10 +3,11 @@
 Talabalar, o'quv guruhlari, fanlar, baholar va davomatni boshqarish uchun web ilova.
 «Loyihalarni boshqarish» fanidan 6-mavzu bo'yicha amaliy loyiha.
 
-**Muallif:** Kozibayeva Shoxista Alisher qizi, Masofaviy KIDT-236 guruhi
-**Tekshiruvchi:** Shixnazar Xusainov
+**Ishlaydigan dastur:** https://shoxista98.github.io/student-management-system/
+**Loyiha xartiyasi:** [docs/project-charter.md](docs/project-charter.md)
 
-![Dashboard](docs/dashboard.png)
+## Maqsad
+Qog'oz jurnallar va tarqoq jadvallar o'rniga talabalar, guruhlar, baholar va davomatni yagona tizimda yuritish, dekanat uchun tezkor hisobotlar olish.
 
 ## Imkoniyatlar
 - Rollar va ruxsatlar (Administrator, Dekanat xodimi, O'qituvchi, Kurator, Talaba)
@@ -17,9 +18,15 @@ Talabalar, o'quv guruhlari, fanlar, baholar va davomatni boshqarish uchun web il
 - Davomat (keldi / sababsiz / sababli), qoldirilgan soatlar
 - Hisobotlar: reyting, akademik qarzdorlar, davomat, guruhlar kesimida
 - Loyiha boshqaruvi: sprint doskasi, Gantt va risk registri
-- Audit jurnali (har bir baho o'zgarishi qayd etiladi)
+- Audit jurnali
 
-## Demo hisoblar
+## O'rnatish
+1. Repozitoriyani klonlang: `git clone https://github.com/Shoxista98/student-management-system.git`
+2. Qo'shimcha kutubxona o'rnatish shart emas — dastur bitta `index.html` faylidan iborat.
+
+## Foydalanish
+`index.html` ni brauzerda oching yoki yuqoridagi GitHub Pages havolasidan foydalaning.
+
 | Rol | Login | Parol |
 |---|---|---|
 | Administrator | admin@usms.uz | admin123 |
@@ -30,13 +37,13 @@ Talabalar, o'quv guruhlari, fanlar, baholar va davomatni boshqarish uchun web il
 
 Barcha ma'lumotlar namunaviy va brauzerning localStorage xotirasida saqlanadi.
 
-## Ishga tushirish
-`index.html` faylini brauzerda oching yoki GitHub Pages orqali ochiladi.
+## Jamoa
+| Ism | Roli |
+|---|---|
+| Kozibayeva Shoxista Alisher qizi (KIDT-236) | Loyiha menejeri, dasturchi |
+| Shixnazar Xusainov | Loyiha rahbari (o'qituvchi) |
 
-## Texnologiyalar
-HTML5, CSS3, JavaScript (ES2020), localStorage. Kelgusi bosqichlarda: React, ASP.NET Core 8, PostgreSQL.
-
-## Bosqichlar (7 ta laboratoriya)
+## Bosqichlar
 1. Arxitektura va foydalanuvchilar
 2. Fakultetlar va guruhlar
 3. Talabalar bazasi
@@ -44,6 +51,9 @@ HTML5, CSS3, JavaScript (ES2020), localStorage. Kelgusi bosqichlarda: React, ASP
 5. Baholash tizimi
 6. Davomat va hisobotlar
 7. Dashboard, test va deploy
+
+## Texnologiyalar
+HTML5, CSS3, JavaScript (ES2020), localStorage, GitHub Pages.
 
 ## Litsenziya
 MIT
