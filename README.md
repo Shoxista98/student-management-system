@@ -44,7 +44,7 @@ Barcha ma'lumotlar namunaviy va brauzerning localStorage xotirasida saqlanadi.
 | Shixnazar Xusainov | Loyiha rahbari (o'qituvchi) |
 
 ## Bosqichlar
-1. Arxitektura, foydalanuvchilar va login (Sprint 1, [docs/login.md](docs/login.md))
+1. Arxitektura, foydalanuvchilar va login — Sprint 1 (25.11–08.12.2026), [docs/login.md](docs/login.md)
 2. Fakultetlar va guruhlar
 3. Talabalar bazasi
 4. Fanlar va o'quv yuklamasi
